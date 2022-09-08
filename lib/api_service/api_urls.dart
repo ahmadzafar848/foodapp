@@ -1,0 +1,5 @@
+const String baseUrl = 'https://food.elms.pk';
+const String signUpUserUrl = '/api/FoodDelivery/PublicInsertClient';
+const String signInUserUrl = '/api/FoodDelivery/PublicCheckLogin';
+const String googleSignInUrl = '/api/FoodDelivery/PublicCheckLoginForGoogle';
+const String checkEmailUrl = '/api/FoodDelivery/PublicCheckEmail';
