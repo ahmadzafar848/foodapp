@@ -160,7 +160,7 @@ class SignInScreenInitialUI extends StatelessWidget {
               onTap: () {
                 signInBloc.add(
                   SignInWithGoogleEvent(
-                    signInWithGoogleModel: SignInWithGoogleModel(loginBy: '0'),
+                    signInWithGoogleModel: SignInWithGoogleModel(loginBy: '2'),
                   ),
                 );
               },

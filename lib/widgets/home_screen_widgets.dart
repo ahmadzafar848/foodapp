@@ -1,49 +1,316 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:meher_kitchen/constants/app_color_constants.dart';
+import 'package:meher_kitchen/models/product_by_id_model.dart';
+import 'package:meher_kitchen/screens/cart_screen.dart';
+import 'package:provider/provider.dart';
 
-class HomeScreenInitialUI extends StatelessWidget {
-  const HomeScreenInitialUI({Key? key}) : super(key: key);
+import '../bloc/home_screen_bloc/home_screen_product_bloc/home_screen_product_bloc.dart';
+import '../models/category_model.dart';
+import '../screens/detail_screen.dart';
+
+class HomeScreenLoadingUI extends StatelessWidget {
+  const HomeScreenLoadingUI({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    double statusBarHeight = MediaQuery.of(context).padding.top;
+    return Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+}
+
+class HomeScreenCategoryLoadedUI extends StatelessWidget {
+  int? currentProductId;
+  final List<CategoryModel> categoryList;
+
+  HomeScreenCategoryLoadedUI({Key? key, required this.categoryList})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        double height = constraints.maxHeight;
+        double width = constraints.maxWidth;
+        return Column(
+          children: [
+            //row...two icons
+            SizedBox(
+              height: height * 0.2,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: width * 0.05,
+                  ),
+                  SizedBox(
+                    width: width * 0.1,
+                    child: InkWell(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      child: Icon(
+                        Icons.menu,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: width * 0.7,
+                  ),
+                  SizedBox(
+                    width: width * 0.1,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return CartScreen();
+                          },
+                        ));
+                      },
+                      child: Icon(
+                        Icons.add_shopping_cart,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: width * 0.05,
+                  )
+                ],
+              ),
+            ),
+            //space
+            SizedBox(
+              height: height * 0.1,
+            ),
+            SizedBox(
+              height: height * 0.18,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: width * 0.09),
+                  child: Text(
+                    'Mehr Kitchen',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: height * 0.07),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: height * 0.12,
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: width * 0.09),
+                  child: Text(
+                    'Better Here',
+                    style: TextStyle(
+                        color: Colors.white60, fontSize: height * 0.06),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: height * 0.2,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: categoryList.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: width * 0.03),
+                      child: GestureDetector(
+                        onTap: () {
+                          currentProductId = categoryList[index].categoryId!;
+
+                          Provider.of<HomeScreenProductBloc>(context,
+                                  listen: false)
+                              .add(
+                                  HomeScreenCategoryFetchCategoryByIdSuccessfullyEvent(
+                                      categoryId: currentProductId!));
+                        },
+                        child: Text(
+                          categoryList[index].categoryTitle.toString(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ));
+                },
+              ),
+            ),
+            //most popular
+            SizedBox(
+              height: height * 0.1,
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: width * 0.09),
+                  child: Text(
+                    'Most Popular',
+                    style:
+                        TextStyle(color: Colors.white, fontSize: height * 0.05),
+                  ),
+                ),
+              ),
+            ),
+            //space
+            SizedBox(
+              height: height * 0.1,
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class HomeScreenProductLoadedUI extends StatelessWidget {
+  // final List<ProductListModel>? productList;
+  final List<ProductByIdModel>? productListById;
+
+  const HomeScreenProductLoadedUI({Key? key, this.productListById})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        double height = constraints.maxHeight;
+        double width = constraints.maxWidth;
+        return GridView.builder(
+          padding: EdgeInsets.all(width * 0.05),
+          itemCount: productListById!.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              mainAxisSpacing: width * 0.02,
+              crossAxisSpacing: height * 0.01,
+              crossAxisCount: 2),
+          itemBuilder: (context, index) {
+            return GestureDetector(
+                onTap: () {
+                  String imageFile =
+                      productListById![index].imageFile.toString();
+                  String salePrice =
+                      productListById![index].salePrice.toString();
+                  String productName =
+                      productListById![index].productName.toString();
+                  String description =
+                      productListById![index].description.toString();
+
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return DetailScreen(
+                        imageFile: imageFile,
+                        salePrice: salePrice,
+                        productName: productName,
+                        description: description,
+                      );
+                    },
+                  ));
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.brown.shade900,
+                      borderRadius: BorderRadius.circular(width * 0.03)),
+                  height: height,
+                  child: LayoutBuilder(
+                    builder: (p0, p1) {
+                      double height = p1.maxHeight;
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: height * 0.05,
+                          ),
+                          SizedBox(
+                            height: height * 0.5,
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  'https://food.elms.pk${productListById![index].imageFile!}' ??
+                                      '',
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              placeholder: (context, url) =>
+                                  Center(child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            ),
+                            // Image.network(productList[index].imageFile!),
+                          ),
+                          SizedBox(
+                            height: height * 0.03,
+                          ),
+                          SizedBox(
+                            height: height * 0.12,
+                            child: Text(
+                              productListById![index].productName.toString(),
+                              style: TextStyle(
+                                  fontSize: height * 0.09, color: Colors.white),
+                            ),
+                          ),
+                          SizedBox(
+                            height: height * 0.20,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: width * 0.03),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                      width: p1.maxWidth * 0.2,
+                                      child: Text(
+                                        'UED',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: p1.maxHeight * 0.08),
+                                      )),
+                                  SizedBox(
+                                      width: p1.maxWidth * 0.3,
+                                      child: Text(
+                                        productListById![index]
+                                            .salePrice
+                                            .toString(),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: p1.maxHeight * 0.08),
+                                      )),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: height * 0.1,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ));
+          },
+        );
+      },
+    );
+  }
+}
+
+class HomeScreenProductNotAvailabelProductUI extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
     return Container(
-      color: AppColors.registerScreenBackgroundColor,
-      child: Column(
-        children: [
-          //row
-          Container(
-            color: Colors.red,
-            height: height * 0.1,
-          ),
-          //text
-          Container(
-            color: Colors.yellow,
-            height: height * 0.06,
-          ),
-          //subtext
-          Container(
-            color: Colors.pink,
-            height: height * 0.04,
-          ),
-          //tabBar
-          Container(
-            color: Colors.black,
-            height: height * 0.05,
-          ),
-          //text
-          Container(
-            color: Colors.purple,
-            height: height * 0.1,
-          ),
-          //gridView
-          Container(
-            color: Colors.red,
-            height: height * 0.65,
-          ),
-        ],
+      color: Colors.brown.shade900,
+      child: Center(
+        child: Text(
+          'Sorry Not Availabel this Time',
+          style: TextStyle(color: Colors.white, fontSize: height * 0.02),
+        ),
       ),
     );
   }
