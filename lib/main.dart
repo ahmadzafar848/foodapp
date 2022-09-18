@@ -7,7 +7,8 @@ import 'package:meher_kitchen/bloc/signin_bloc/sign_in_bloc.dart';
 import 'package:meher_kitchen/bloc/signup_bloc/sign_up_bloc.dart';
 import 'package:meher_kitchen/screens/home_screen.dart';
 
-
+import 'bloc/cart_bloc/cart_bloc.dart';
+import 'bloc/detail_screen_add_to_cart_bloc/detail_screen_add_to_cart_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +34,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<HomeScreenProductBloc>(
           create: (context) => HomeScreenProductBloc(),
+        ),
+        BlocProvider<DetailScreenAddToCartBloc>(
+          create: (context) => DetailScreenAddToCartBloc(),
+        ),
+        BlocProvider<CartBloc>(
+          create: (context) => CartBloc(),
         ),
       ],
       child: MaterialApp(home: HomeScreen()),

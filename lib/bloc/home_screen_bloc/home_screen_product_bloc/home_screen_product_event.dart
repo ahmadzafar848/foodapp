@@ -3,6 +3,8 @@ part of 'home_screen_product_bloc.dart';
 @immutable
 abstract class HomeScreenProductEvent {}
 
+class HomeScreenFetchProductInitialEvent {}
+
 class HomeScreenFetchProductListSuccessfullyEvent
     extends HomeScreenProductEvent {}
 

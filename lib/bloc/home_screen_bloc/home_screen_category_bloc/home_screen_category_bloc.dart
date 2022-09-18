@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
-import '../../../api_service/api_service.dart';
 import '../../../models/category_model.dart';
+import '../../../utils/api_service/api_service.dart';
 
 part 'home_screen_category_event.dart';
 part 'home_screen_category_state.dart';

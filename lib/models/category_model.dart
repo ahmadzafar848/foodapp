@@ -11,12 +11,6 @@ class CategoryModel {
     this.imageFile,
   });
 
-  // CategoryModel.fromJson(Map<String, dynamic> json) {
-  //   categoryId = json['CategoryId'];
-  //   categoryTitle = json['CategoryTitle'];
-  //   imageFile = json['ImageFile'];
-  // }
-
   String toJson() => json.encode(toMap());
 
   factory CategoryModel.fromMap(Map<String, dynamic> json) => CategoryModel(

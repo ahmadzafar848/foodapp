@@ -1,20 +1,30 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:meher_kitchen/bloc/cart_bloc/cart_bloc.dart';
+import 'package:meher_kitchen/bloc/detail_screen_add_to_cart_bloc/detail_screen_add_to_cart_bloc.dart';
+import 'package:meher_kitchen/models/cart_product_model.dart';
+import 'package:meher_kitchen/utils/local_database/product_db_provider.dart';
+import 'package:provider/provider.dart';
 
+import '../bloc/home_screen_bloc/home_screen_product_bloc/home_screen_product_bloc.dart';
 import '../screens/cart_screen.dart';
 
 class DetailScreenInitialUI extends StatelessWidget {
+  ProductDbProvider productDbProvider = ProductDbProvider();
   String? imageFile;
-  String? salePrice;
+  double? salePrice;
   String? productName;
   String? description;
+  String? productId;
 
   DetailScreenInitialUI(
       {Key? key,
       this.imageFile,
       this.salePrice,
       this.description,
-      this.productName})
+      this.productName,
+      this.productId})
       : super(key: key);
 
   @override
@@ -39,6 +49,11 @@ class DetailScreenInitialUI extends StatelessWidget {
                       width: width * 0.1,
                       child: InkWell(
                         onTap: () {
+                          Provider.of<HomeScreenProductBloc>(context,
+                                  listen: false)
+                              .add(
+                                  HomeScreenCategoryFetchCategoryByIdSuccessfullyEvent(
+                                      categoryId: 0));
                           Navigator.pop(context);
                         },
                         child: Icon(
@@ -53,12 +68,32 @@ class DetailScreenInitialUI extends StatelessWidget {
                     SizedBox(
                       width: width * 0.1,
                       child: InkWell(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return CartScreen();
-                            },
-                          ));
+                        onTap: () async {
+                          List<CartProductModel> list =
+                              await productDbProvider.fetchProductFromDb();
+                          if (list.isEmpty) {
+                            Provider.of<CartBloc>(context, listen: false)
+                                .add(CartEmptyEvent());
+                            SchedulerBinding.instance
+                                .addPostFrameCallback((timeStamp) {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return CartScreen();
+                                },
+                              ));
+                            });
+                          } else {
+                            Provider.of<CartBloc>(context, listen: false)
+                                .add(CartLoadedEvent());
+                            SchedulerBinding.instance
+                                .addPostFrameCallback((timeStamp) {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return CartScreen();
+                                },
+                              ));
+                            });
+                          }
                         },
                         child: Icon(
                           Icons.add_shopping_cart,
@@ -219,17 +254,35 @@ class DetailScreenInitialUI extends StatelessWidget {
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Added To Cart')));
                     },
-                    child: Container(
-                      height: height * 0.07,
-                      width: width * 0.35,
-                      decoration: BoxDecoration(
-                        color: Colors.yellow,
-                        borderRadius: BorderRadius.circular(width * 0.02),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'Add To Cart',
-                          style: TextStyle(color: Colors.black),
+                    child: GestureDetector(
+                      onTap: () {
+                        //function
+                        Provider.of<DetailScreenAddToCartBloc>(context,
+                                listen: false)
+                            .add(
+                          DetailScreenAddToCartSuccessfullyEvent(
+                            cartProductModel: (CartProductModel(
+                                productId: productId,
+                                pictureUrl: imageFile,
+                                productName: productName,
+                                price: salePrice,
+                                singleItemPrice: salePrice,
+                                quantity: 1)),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: height * 0.07,
+                        width: width * 0.35,
+                        decoration: BoxDecoration(
+                          color: Colors.yellow,
+                          borderRadius: BorderRadius.circular(width * 0.02),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Add To Cart',
+                            style: TextStyle(color: Colors.black),
+                          ),
                         ),
                       ),
                     ),

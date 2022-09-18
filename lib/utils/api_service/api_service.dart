@@ -9,7 +9,7 @@ import 'package:meher_kitchen/models/signIn_user_model.dart';
 import 'package:meher_kitchen/models/signin_with_google_model.dart';
 import 'package:meher_kitchen/models/signup_user_model.dart';
 
-import '../models/product_by_id_model.dart';
+import '../../models/product_by_id_model.dart';
 import 'api_urls.dart';
 
 class ApiService {

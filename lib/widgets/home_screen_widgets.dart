@@ -1,10 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:meher_kitchen/models/product_by_id_model.dart';
 import 'package:meher_kitchen/screens/cart_screen.dart';
+import 'package:meher_kitchen/utils/local_database/product_db_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../bloc/cart_bloc/cart_bloc.dart';
 import '../bloc/home_screen_bloc/home_screen_product_bloc/home_screen_product_bloc.dart';
+import '../models/cart_product_model.dart';
 import '../models/category_model.dart';
 import '../screens/detail_screen.dart';
 
@@ -22,6 +26,7 @@ class HomeScreenLoadingUI extends StatelessWidget {
 class HomeScreenCategoryLoadedUI extends StatelessWidget {
   int? currentProductId;
   final List<CategoryModel> categoryList;
+  ProductDbProvider productDbProvider = ProductDbProvider();
 
   HomeScreenCategoryLoadedUI({Key? key, required this.categoryList})
       : super(key: key);
@@ -60,12 +65,32 @@ class HomeScreenCategoryLoadedUI extends StatelessWidget {
                   SizedBox(
                     width: width * 0.1,
                     child: InkWell(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return CartScreen();
-                          },
-                        ));
+                      onTap: () async {
+                        List<CartProductModel> list =
+                            await productDbProvider.fetchProductFromDb();
+                        if (list.isEmpty) {
+                          Provider.of<CartBloc>(context, listen: false)
+                              .add(CartEmptyEvent());
+                          SchedulerBinding.instance
+                              .addPostFrameCallback((timeStamp) {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return CartScreen();
+                              },
+                            ));
+                          });
+                        } else {
+                          Provider.of<CartBloc>(context, listen: false)
+                              .add(CartLoadedEvent());
+                          SchedulerBinding.instance
+                              .addPostFrameCallback((timeStamp) {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return CartScreen();
+                              },
+                            ));
+                          });
+                        }
                       },
                       child: Icon(
                         Icons.add_shopping_cart,
@@ -190,12 +215,13 @@ class HomeScreenProductLoadedUI extends StatelessWidget {
                 onTap: () {
                   String imageFile =
                       productListById![index].imageFile.toString();
-                  String salePrice =
-                      productListById![index].salePrice.toString();
+                  double salePrice = productListById![index].salePrice!;
                   String productName =
                       productListById![index].productName.toString();
                   String description =
                       productListById![index].description.toString();
+                  String productId =
+                      productListById![index].productId.toString();
 
                   Navigator.push(context, MaterialPageRoute(
                     builder: (context) {
@@ -204,6 +230,7 @@ class HomeScreenProductLoadedUI extends StatelessWidget {
                         salePrice: salePrice,
                         productName: productName,
                         description: description,
+                        productId: productId,
                       );
                     },
                   ));

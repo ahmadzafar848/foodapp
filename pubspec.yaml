@@ -43,7 +43,7 @@ dependencies:
   firebase_core:
   firebase_auth:
   cached_network_image: any
-
+  sqflite:
 dev_dependencies:
   flutter_test:
     sdk: flutter

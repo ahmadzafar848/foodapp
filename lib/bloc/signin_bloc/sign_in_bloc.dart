@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:meher_kitchen/api_service/api_service.dart';
 import 'package:meher_kitchen/models/signin_with_google_model.dart';
 import 'package:meta/meta.dart';
 
 import '../../models/signIn_user_model.dart';
+import '../../utils/api_service/api_service.dart';
 
 part 'sign_in_event.dart';
 part 'sign_in_state.dart';

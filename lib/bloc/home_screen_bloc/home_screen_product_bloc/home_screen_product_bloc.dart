@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
-import '../../../api_service/api_service.dart';
 import '../../../models/product_by_id_model.dart';
 import '../../../models/product_list_model.dart';
+import '../../../utils/api_service/api_service.dart';
 
 part 'home_screen_product_event.dart';
 part 'home_screen_product_state.dart';
