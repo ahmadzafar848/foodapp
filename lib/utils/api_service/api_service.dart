@@ -10,6 +10,7 @@ import 'package:meher_kitchen/models/signin_with_google_model.dart';
 import 'package:meher_kitchen/models/signup_user_model.dart';
 
 import '../../models/product_by_id_model.dart';
+import '../../models/prooced_to_checkout_model.dart';
 import 'api_urls.dart';
 
 class ApiService {
@@ -70,7 +71,6 @@ class ApiService {
         ),
         headers: {HttpHeaders.contentTypeHeader: 'application/json'});
     if (response.statusCode == 200) {
-      print(response.statusCode);
       final stringResponseCode = response.body;
       return SignInWithGoogleModel.fromJson(stringResponseCode);
     } else {
@@ -106,5 +106,15 @@ class ApiService {
       return data.map((e) => ProductByIdModel.fromJson(e)).toList();
     }
     return [];
+  }
+
+  Future<Map<String, dynamic>> proceedToCheckOutOrder(
+      List<ProceedToCheckOutModel> list) async {
+    List<Map<String,dynamic>> ls = list.map((e) => e.toMap()).toList();
+    Response response = await post(Uri.parse(baseUrl + proceedToCheckOutUrl),
+        body: jsonEncode(ls),
+        headers: {HttpHeaders.contentTypeHeader: 'application/json'});
+    Map<String, dynamic> data = jsonDecode(response.body);
+    return data;
   }
 }

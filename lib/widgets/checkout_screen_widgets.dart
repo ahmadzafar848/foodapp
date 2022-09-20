@@ -30,9 +30,14 @@ class CheckoutScreenInitialUI extends StatelessWidget {
                     SizedBox(
                       width: width * 0.15,
                       child: Center(
-                        child: Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),

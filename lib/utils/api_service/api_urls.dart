@@ -7,3 +7,5 @@ const String categoryListUrl = '/api/FoodDelivery/PublicGetListCategory';
 const String productListUrl = '/api/FoodProduct/PublicGetProductList';
 const String productByIdUrl =
     '/api/FoodProduct/PublicGetProductListByCategoryId';
+const String proceedToCheckOutUrl =
+    '/api/FoodDelivery/PublicInsertFoodOrderDetail';

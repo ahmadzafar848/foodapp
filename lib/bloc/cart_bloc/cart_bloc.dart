@@ -1,7 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:meher_kitchen/models/cart_product_model.dart';
+import 'package:meher_kitchen/utils/api_service/api_service.dart';
 import 'package:meher_kitchen/utils/local_database/product_db_provider.dart';
 import 'package:meta/meta.dart';
+
+import '../../models/prooced_to_checkout_model.dart';
 
 part 'cart_event.dart';
 part 'cart_state.dart';
@@ -21,6 +24,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       try {
         List<CartProductModel> list =
             await productDbProvider.fetchProductFromDb();
+        // for (int i = 0; i < list.length; i++) {
+        //   int a = list[i].quantity!;
+        //   print(a);
+        // }
         for (int i = 0; i < list.length; i++) {
           double a = list[i].price!;
           sum = sum + a;
@@ -179,22 +186,44 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
     });
 
-    // on<FetchAllPricesSuccessfullyEvent>((event, emit) async {
-    //   double sum = 0;
-    //   double subTotalPrice = 0;
-    //   try {
-    //     List<CartProductModel> list =
-    //         await productDbProvider.fetchProductFromDb();
-    //     for (int i = 0; i < list.length; i++) {
-    //       double a = list[i].price!;
-    //       sum = sum + a;
-    //     }
-    //     subTotalPrice = sum;
-    //     emit.call(
-    //         FetchAllPricesSuccessfullyState(subTotalPrice: subTotalPrice));
-    //   } catch (e) {
-    //     emit.call(CartFailedState(message: 'Exception of price'));
-    //   }
-    // });
+    on<ProceedToCheckOutSuccessfullyEvent>((event, emit) async {
+      ApiService apiService = ApiService();
+      List<ProceedToCheckOutModel> list = [];
+
+      try {
+        List<CartProductModel> cartProductList = event.list;
+
+        for (int i = 0; i < cartProductList.length; i++) {
+          String productId = cartProductList[i].productId!;
+          double price = cartProductList[i].price!;
+          int? quantity = cartProductList[i].quantity!;
+          int? myProductId = int.parse(productId);
+          int? newPrice = price.toInt();
+          int? orderId = 0;
+          list.add(ProceedToCheckOutModel(
+              orderId: orderId,
+              productId: myProductId,
+              price: newPrice,
+              quantity: quantity));
+        }
+        try {
+          Map<String, dynamic> data =
+              await apiService.proceedToCheckOutOrder(list);
+          if (data['Status'] == 'Order Detail Insertion Failed') {
+            emit.call(
+                ProceedToCheckOutFailedState(message: 'Sorry can not proceed'));
+          } else if (data['Status'] == 'Inserted Successfully') {
+            emit.call(ProceedToCheckOutSuccessfullyState());
+          } else {
+            emit.call(ProceedToCheckOutFailedState(message: 'else bloc'));
+          }
+        } catch (e) {
+          emit.call(ProceedToCheckOutFailedState(
+              message: 'Proceed To Checkout 2nd try Exception'));
+        }
+      } catch (e) {
+        emit.call(ProceedToCheckOutFailedState(message: 'Proceed Exception'));
+      }
+    });
   }
 }

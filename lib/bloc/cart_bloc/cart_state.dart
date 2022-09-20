@@ -72,3 +72,10 @@ class FetchAllPricesSuccessfullyState extends CartState {
   double subTotalPrice;
   FetchAllPricesSuccessfullyState({required this.subTotalPrice});
 }
+
+class ProceedToCheckOutSuccessfullyState extends CartState {}
+
+class ProceedToCheckOutFailedState extends CartState {
+  final String message;
+  ProceedToCheckOutFailedState({required this.message});
+}

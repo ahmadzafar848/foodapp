@@ -25,3 +25,8 @@ class CartSubtractionOfQuantityEvent extends CartEvent {
 }
 
 class FetchAllPricesSuccessfullyEvent extends CartEvent {}
+
+class ProceedToCheckOutSuccessfullyEvent extends CartEvent {
+  List<CartProductModel> list;
+  ProceedToCheckOutSuccessfullyEvent({required this.list});
+}

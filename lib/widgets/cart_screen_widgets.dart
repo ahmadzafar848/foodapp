@@ -93,6 +93,7 @@ class CartScreenLoadedUI extends StatefulWidget {
   double salesTax;
   double deliverCharges;
   double total;
+
   CartScreenLoadedUI(
       {Key? key,
       required this.list,
@@ -538,20 +539,28 @@ class _CartScreenLoadedUIState extends State<CartScreenLoadedUI> {
                 height: height * 0.015,
               ),
               //button
-              Container(
-                height: height * 0.07,
-                width: width * 0.75,
-                decoration: BoxDecoration(
-                  color: Colors.yellow,
-                  borderRadius: BorderRadius.circular(height * 0.02),
-                ),
-                child: Center(
-                  child: Text(
-                    'Proceed To CheckOut',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: height * 0.022,
-                        fontWeight: FontWeight.bold),
+              GestureDetector(
+                onTap: () async {
+                  List<CartProductModel> list =
+                      await productDbProvider.fetchProductFromDb();
+                  Provider.of<CartBloc>(context, listen: false)
+                      .add(ProceedToCheckOutSuccessfullyEvent(list: list));
+                },
+                child: Container(
+                  height: height * 0.07,
+                  width: width * 0.75,
+                  decoration: BoxDecoration(
+                    color: Colors.yellow,
+                    borderRadius: BorderRadius.circular(height * 0.02),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Proceed To CheckOut',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: height * 0.022,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
               ),

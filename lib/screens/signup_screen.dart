@@ -27,7 +27,6 @@ class SignUpScreen extends StatelessWidget {
             return SizedBox();
           } else if (state is SignUpFailedState) {
             SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-              print(state.message.toString());
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),

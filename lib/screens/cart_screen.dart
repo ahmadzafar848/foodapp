@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meher_kitchen/bloc/cart_bloc/cart_bloc.dart';
 import 'package:meher_kitchen/widgets/cart_screen_widgets.dart';
+
+import 'checkout_screen.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -48,6 +51,24 @@ class CartScreen extends StatelessWidget {
               deliverCharges: state.deliveryCharges,
               total: state.total,
             );
+          } else if (state is ProceedToCheckOutSuccessfullyState) {
+            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) {
+                  return CheckoutScreen();
+                },
+              ));
+            });
+            return SizedBox();
+          } else if (state is ProceedToCheckOutFailedState) {
+            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                ),
+              );
+            });
+            return SizedBox();
           } else {
             return Center(
               child: Text('Cart Builder Error'),
