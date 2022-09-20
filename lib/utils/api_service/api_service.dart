@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart';
 import 'package:meher_kitchen/models/category_model.dart';
+import 'package:meher_kitchen/models/confirm_order_model.dart';
 import 'package:meher_kitchen/models/signIn_user_model.dart';
 import 'package:meher_kitchen/models/signin_with_google_model.dart';
 import 'package:meher_kitchen/models/signup_user_model.dart';
@@ -14,7 +15,7 @@ import '../../models/prooced_to_checkout_model.dart';
 import 'api_urls.dart';
 
 class ApiService {
-  Future signUpUser(SignUpUserModel model) async {
+  Future<Map<String, dynamic>> signUpUser(SignUpUserModel model) async {
     Response response = await post(Uri.parse(baseUrl + signUpUserUrl),
         body: jsonEncode({
           'email': model.email,
@@ -23,12 +24,9 @@ class ApiService {
           'loginBy': model.loginBy
         }),
         headers: {HttpHeaders.contentTypeHeader: 'application/json'});
-    if (response.statusCode == 200) {
-      final stringResponseCode = response.body;
-      return SignUpUserModel.fromJson(stringResponseCode);
-    } else {
-      print(response.statusCode);
-    }
+    final stringResponseCode = response.body;
+    Map<String, dynamic> data = jsonDecode(stringResponseCode);
+    return data;
   }
 
   Future<Map<String, dynamic>> checkEmail(SignUpUserModel model) async {
@@ -62,7 +60,8 @@ class ApiService {
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
-  Future signInWithGoogleThroughApiService(SignInWithGoogleModel model) async {
+  Future<Map<String, dynamic>> signInWithGoogleThroughApiService(
+      SignInWithGoogleModel model) async {
     UserCredential userCredential = await signInWithWithGoogle();
     String? email = userCredential.user!.email;
     Response response = await post(Uri.parse(baseUrl + googleSignInUrl),
@@ -70,12 +69,10 @@ class ApiService {
           {'email': email, 'loginBy': model.loginBy},
         ),
         headers: {HttpHeaders.contentTypeHeader: 'application/json'});
-    if (response.statusCode == 200) {
-      final stringResponseCode = response.body;
-      return SignInWithGoogleModel.fromJson(stringResponseCode);
-    } else {
-      print(response.statusCode);
-    }
+
+    final stringResponseCode = response.body;
+    Map<String, dynamic> data = jsonDecode(stringResponseCode);
+    return data;
   }
 
   Future<List<CategoryModel>> getCategoryList() async {
@@ -110,9 +107,27 @@ class ApiService {
 
   Future<Map<String, dynamic>> proceedToCheckOutOrder(
       List<ProceedToCheckOutModel> list) async {
-    List<Map<String,dynamic>> ls = list.map((e) => e.toMap()).toList();
+    List<Map<String, dynamic>> ls = list.map((e) => e.toMap()).toList();
     Response response = await post(Uri.parse(baseUrl + proceedToCheckOutUrl),
         body: jsonEncode(ls),
+        headers: {HttpHeaders.contentTypeHeader: 'application/json'});
+    Map<String, dynamic> data = jsonDecode(response.body);
+    return data;
+  }
+
+  Future<Map<String, dynamic>> confirmOrder(ConfirmOrderModel model) async {
+    Response response = await post(Uri.parse(baseUrl + confirmOrderUrl),
+        body: jsonEncode({
+          'ClientId': model.clientId,
+          'OrderTotalAmount': model.orderTotalAmount,
+          'OrderAmount': model.orderAmount,
+          'TaxAmount': model.taxAmount,
+          'OrderDescription': model.orderDescription,
+          'DeliveryAddress': model.deliveryCharges,
+          'DeliveryPhoneNumber': model.deliveryPhoneNumber,
+          'TaxPercentage': model.taxPercentage,
+          'DeliveryCharges': model.deliveryCharges
+        }),
         headers: {HttpHeaders.contentTypeHeader: 'application/json'});
     Map<String, dynamic> data = jsonDecode(response.body);
     return data;

@@ -1,5 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:meher_kitchen/bloc/confirm_order_bloc/confirm_order_bloc.dart';
+import 'package:provider/provider.dart';
+
+import '../constants/client_id.dart';
+import '../models/confirm_order_model.dart';
 
 class CheckoutScreenInitialUI extends StatelessWidget {
   CheckoutScreenInitialUI({Key? key}) : super(key: key);
@@ -7,8 +12,9 @@ class CheckoutScreenInitialUI extends StatelessWidget {
       TextEditingController();
   final TextEditingController specialInstructionTextEditingController =
       TextEditingController();
-  final _phoneNumberKey = GlobalKey<FormFieldState>();
-  final _addressKey = GlobalKey<FormFieldState>();
+  final TextEditingController addressTextEditingController =
+      TextEditingController();
+
   final _key = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -117,6 +123,7 @@ class CheckoutScreenInitialUI extends StatelessWidget {
                         child: Padding(
                           padding: EdgeInsets.only(left: width * 0.03),
                           child: TextFormField(
+                            controller: addressTextEditingController,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Please Provide Address';
@@ -144,9 +151,15 @@ class CheckoutScreenInitialUI extends StatelessWidget {
                       //icon
                       SizedBox(
                         width: width * 0.12,
-                        child: Icon(
-                          Icons.location_on,
-                          color: Colors.white,
+                        child: GestureDetector(
+                          onTap: () {
+                            addressTextEditingController.text =
+                                'Cas Bahawalpur';
+                          },
+                          child: Icon(
+                            Icons.location_on,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
@@ -238,7 +251,7 @@ Know                      ''',
                       SizedBox(
                         width: width * 0.2,
                         child: Text(
-                          'Total',
+                          ClientId.orderTotalAmount.toString(),
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -270,7 +283,22 @@ Know                      ''',
               InkWell(
                 onTap: () {
                   if (_key.currentState!.validate()) {
-                    print('Validated');
+                    Provider.of<ConfirmOrderBloc>(context, listen: false).add(
+                        ConfirmOrderSuccessfullyEvent(
+                            model: ConfirmOrderModel(
+                                clientId: ClientId.clientId,
+                                orderTotalAmount: ClientId.orderTotalAmount,
+                                orderAmount: ClientId.orderAmount,
+                                orderDescription:
+                                    specialInstructionTextEditingController
+                                        .text,
+                                deliveryAddress:
+                                    addressTextEditingController.text,
+                                deliveryPhoneNumber:
+                                    phoneNoTextEditingController.text,
+                                taxPercentage: ClientId.taxPercentage,
+                                deliveryCharges: ClientId.deliveryCharges,
+                                taxAmount: ClientId.taxAmount)));
                   }
                 },
                 child: Container(

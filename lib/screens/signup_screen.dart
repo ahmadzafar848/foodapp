@@ -7,6 +7,7 @@ import 'package:meher_kitchen/widgets/signup_screen_widgets.dart';
 import '../bloc/signup_bloc/sign_up_bloc.dart';
 
 class SignUpScreen extends StatelessWidget {
+  static int clientId = 0;
   SignUpScreen({Key? key}) : super(key: key);
 
   @override

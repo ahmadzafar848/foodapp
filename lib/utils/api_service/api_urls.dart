@@ -9,3 +9,4 @@ const String productByIdUrl =
     '/api/FoodProduct/PublicGetProductListByCategoryId';
 const String proceedToCheckOutUrl =
     '/api/FoodDelivery/PublicInsertFoodOrderDetail';
+const String confirmOrderUrl = '/api/FoodDelivery/PublicInsertFoodOrder';

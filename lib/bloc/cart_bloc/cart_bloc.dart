@@ -4,6 +4,7 @@ import 'package:meher_kitchen/utils/api_service/api_service.dart';
 import 'package:meher_kitchen/utils/local_database/product_db_provider.dart';
 import 'package:meta/meta.dart';
 
+import '../../constants/client_id.dart';
 import '../../models/prooced_to_checkout_model.dart';
 
 part 'cart_event.dart';
@@ -34,7 +35,21 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         }
         subTotalPrice = sum;
         salesTax = (subTotalPrice * 10) / 100;
+        print('sales tax is $salesTax');
         total = subTotalPrice + salesTax + deliveryCharges;
+        //subtotal price=orderAmount
+        //total=totalOrderAmount
+        //salesTax=taxAmount
+        int newSubTotalPrice =
+            subTotalPrice.toInt(); //parsing to int from double
+        int newTotal = total.toInt();
+        int newSalesTax = salesTax.toInt();
+        print('new Sales Tax=$newSalesTax');
+        //insert in a new File to store and utilize it in next screen
+        ClientId.orderAmount = newSubTotalPrice;
+        ClientId.orderTotalAmount = newTotal;
+        ClientId.taxAmount = newSalesTax;
+
         emit.call(CartLoadedState(
             list: list,
             subTotalPrice: subTotalPrice,
