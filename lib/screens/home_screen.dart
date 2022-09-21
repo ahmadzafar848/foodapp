@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meher_kitchen/bloc/home_screen_bloc/home_screen_product_bloc/home_screen_product_bloc.dart';
+import 'package:meher_kitchen/bloc/signin_bloc/sign_in_bloc.dart';
 import 'package:meher_kitchen/screens/cart_screen.dart';
 import 'package:meher_kitchen/screens/checkout_screen.dart';
+import 'package:meher_kitchen/screens/signin_screen.dart';
 import 'package:meher_kitchen/widgets/home_screen_widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bloc/home_screen_bloc/home_screen_category_bloc/home_screen_category_bloc.dart';
 
@@ -220,7 +223,19 @@ class AppDrawer extends StatelessWidget {
           SizedBox(
             height: height * 0.1,
             child: ListTile(
-              onTap: () {},
+              onTap: () async {
+                int id = 0;
+                SharedPreferences sharedPrefrences =
+                    await SharedPreferences.getInstance();
+                sharedPrefrences.setInt('ClientId', id);
+                Provider.of<SignInBloc>(context, listen: false)
+                    .add(SignInInitialEvent());
+                Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (context) {
+                    return SignInScreen();
+                  },
+                ));
+              },
               leading: Icon(
                 Icons.assignment_outlined,
                 color: Colors.yellow,
