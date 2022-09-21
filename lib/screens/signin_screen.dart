@@ -11,52 +11,55 @@ class SignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: Scaffold(body: BlocBuilder<SignInBloc, SignInState>(
-      builder: (context, state) {
-        if (state is SignInInitialState) {
-          return SignInScreenInitialUI();
-        } else if (state is SignInSuccessfullyState) {
-          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            Navigator.push(context, MaterialPageRoute(
-              builder: (context) {
-                return HomeScreen();
+    return SafeArea(
+        child: Scaffold(
+            backgroundColor: Colors.brown,
+            body: BlocBuilder<SignInBloc, SignInState>(
+              builder: (context, state) {
+                if (state is SignInInitialState) {
+                  return SignInScreenInitialUI();
+                } else if (state is SignInSuccessfullyState) {
+                  SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return HomeScreen();
+                      },
+                    ));
+                  });
+                  return SizedBox();
+                } else if (state is SignInFailedState) {
+                  SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.message),
+                      ),
+                    );
+                  });
+                  return SignInScreenInitialUI();
+                } else if (state is SignInWithGoogleSuccessfullyState) {
+                  SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return HomeScreen();
+                      },
+                    ));
+                  });
+                  return SizedBox();
+                } else if (state is SignInWithGoogleFailedState) {
+                  SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.message),
+                      ),
+                    );
+                  });
+                  return SignInScreenInitialUI();
+                } else {
+                  return Center(
+                    child: Text('Builder Error'),
+                  );
+                }
               },
-            ));
-          });
-          return SizedBox();
-        } else if (state is SignInFailedState) {
-          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-              ),
-            );
-          });
-          return SignInScreenInitialUI();
-        } else if (state is SignInWithGoogleSuccessfullyState) {
-          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            Navigator.push(context, MaterialPageRoute(
-              builder: (context) {
-                return HomeScreen();
-              },
-            ));
-          });
-          return SizedBox();
-        } else if (state is SignInWithGoogleFailedState) {
-          SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-              ),
-            );
-          });
-          return SignInScreenInitialUI();
-        } else {
-          return Center(
-            child: Text('Builder Error'),
-          );
-        }
-      },
-    )));
+            )));
   }
 }

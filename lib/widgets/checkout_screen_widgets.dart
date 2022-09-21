@@ -16,6 +16,7 @@ class CheckoutScreenInitialUI extends StatelessWidget {
       TextEditingController();
 
   final _key = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -153,8 +154,12 @@ class CheckoutScreenInitialUI extends StatelessWidget {
                         width: width * 0.12,
                         child: GestureDetector(
                           onTap: () {
+                            // Provider.of<ConfirmOrderBloc>(context,
+                            //         listen: false)
+                            //     .add(
+                            //         GetCurrentLocationOfUserSuccessfullyEvent());
                             addressTextEditingController.text =
-                                'Cas Bahawalpur';
+                                'Satellite Town  Punjab Pakistan';
                           },
                           child: Icon(
                             Icons.location_on,
@@ -251,7 +256,7 @@ Know                      ''',
                       SizedBox(
                         width: width * 0.2,
                         child: Text(
-                          ClientId.orderTotalAmount.toString(),
+                          'Total',
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -264,7 +269,7 @@ Know                      ''',
                       SizedBox(
                         width: width * 0.2,
                         child: Text(
-                          '360',
+                          ClientId.orderTotalAmount.toString(),
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: height * 0.03,

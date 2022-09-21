@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:meher_kitchen/constants/app_color_constants.dart';
 
 class CustomTextFormField extends StatelessWidget {
-  CustomTextFormField(
-      {Key? key,
-      required this.controller,
-      this.validatorFunction,
-      required this.hintText,
-      required this.prefixIcon,
-      this.suffixIcon})
-      : super(key: key);
+  CustomTextFormField({
+    Key? key,
+    required this.controller,
+    this.validatorFunction,
+    required this.hintText,
+    required this.prefixIcon,
+    this.suffixIcon,
+  }) : super(key: key);
   TextEditingController controller;
   String? Function(String? value)? validatorFunction;
   IconData prefixIcon;

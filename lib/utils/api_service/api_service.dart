@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart';
 import 'package:meher_kitchen/models/category_model.dart';
@@ -131,5 +132,14 @@ class ApiService {
         headers: {HttpHeaders.contentTypeHeader: 'application/json'});
     Map<String, dynamic> data = jsonDecode(response.body);
     return data;
+  }
+
+  Future<Position> getUserCurrentLocation() async {
+    await Geolocator.requestPermission()
+        .then((value) {})
+        .onError((error, stackTrace) {
+      print('error$error');
+    });
+    return await Geolocator.getCurrentPosition();
   }
 }

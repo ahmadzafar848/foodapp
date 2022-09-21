@@ -44,7 +44,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
             subTotalPrice.toInt(); //parsing to int from double
         int newTotal = total.toInt();
         int newSalesTax = salesTax.toInt();
-        print('new Sales Tax=$newSalesTax');
         //insert in a new File to store and utilize it in next screen
         ClientId.orderAmount = newSubTotalPrice;
         ClientId.orderTotalAmount = newTotal;
@@ -93,6 +92,14 @@ class CartBloc extends Bloc<CartEvent, CartState> {
             subTotalPrice = sum;
             salesTax = (subTotalPrice * 10) / 100;
             total = subTotalPrice + salesTax + deliveryCharges;
+            int newSubTotalPrice =
+                subTotalPrice.toInt(); //parsing to int from double
+            int newTotal = total.toInt();
+            int newSalesTax = salesTax.toInt();
+            //insert in a new File to store and utilize it in next screen
+            ClientId.orderAmount = newSubTotalPrice;
+            ClientId.orderTotalAmount = newTotal;
+            ClientId.taxAmount = newSalesTax;
             if (list.isNotEmpty) {
               emit.call(CartLoadedState(
                   list: list,
@@ -140,6 +147,14 @@ class CartBloc extends Bloc<CartEvent, CartState> {
             subTotalPrice = sum;
             salesTax = (subTotalPrice * 10) / 100;
             total = subTotalPrice + salesTax + deliveryCharges;
+            int newSubTotalPrice =
+                subTotalPrice.toInt(); //parsing to int from double
+            int newTotal = total.toInt();
+            int newSalesTax = salesTax.toInt();
+            //insert in a new File to store and utilize it in next screen
+            ClientId.orderAmount = newSubTotalPrice;
+            ClientId.orderTotalAmount = newTotal;
+            ClientId.taxAmount = newSalesTax;
             emit.call(CartAdditionOfQuantityState(
                 list: list,
                 subTotalPrice: subTotalPrice,
@@ -183,6 +198,14 @@ class CartBloc extends Bloc<CartEvent, CartState> {
               subTotalPrice = sum;
               salesTax = (subTotalPrice * 10) / 100;
               total = subTotalPrice + salesTax + deliveryCharges;
+              int newSubTotalPrice =
+                  subTotalPrice.toInt(); //parsing to int from double
+              int newTotal = total.toInt();
+              int newSalesTax = salesTax.toInt();
+              //insert in a new File to store and utilize it in next screen
+              ClientId.orderAmount = newSubTotalPrice;
+              ClientId.orderTotalAmount = newTotal;
+              ClientId.taxAmount = newSalesTax;
               emit.call(CartAdditionOfQuantityState(
                   list: list,
                   subTotalPrice: subTotalPrice,

@@ -14,3 +14,8 @@ class ConfirmOrderFailedState extends ConfirmOrderState {
   final String message;
   ConfirmOrderFailedState({required this.message});
 }
+
+class GetCurrentLocationOfUserSuccessfullyState extends ConfirmOrderState {
+  final String address;
+  GetCurrentLocationOfUserSuccessfullyState({required this.address});
+}

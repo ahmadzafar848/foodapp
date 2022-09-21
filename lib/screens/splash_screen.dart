@@ -1,22 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:meher_kitchen/constants/app_color_constants.dart';
+import 'package:meher_kitchen/screens/home_screen.dart';
 import 'package:meher_kitchen/screens/signin_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  SplashScreen({Key? key}) : super(key: key);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  int? id;
+  void getClientId() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    id = sharedPreferences.getInt('clientId');
+  }
+
   @override
   void initState() {
+    getClientId();
     Future.delayed(Duration(seconds: 3), () {
       Navigator.pushReplacement(context, MaterialPageRoute(
         builder: (context) {
-          return SignInScreen();
+          if (id != null) {
+            return HomeScreen();
+          } else {
+            return SignInScreen();
+          }
         },
       ));
     });

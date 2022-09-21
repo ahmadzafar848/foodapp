@@ -7,3 +7,5 @@ class ConfirmOrderSuccessfullyEvent extends ConfirmOrderEvent {
   ConfirmOrderModel model;
   ConfirmOrderSuccessfullyEvent({required this.model});
 }
+
+class GetCurrentLocationOfUserSuccessfullyEvent extends ConfirmOrderEvent {}

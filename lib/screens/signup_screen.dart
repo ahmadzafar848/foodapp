@@ -13,6 +13,7 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.brown,
       body: SafeArea(child: BlocBuilder<SignUpBloc, SignUpState>(
         builder: (context, state) {
           if (state is SignUpInitialState) {
